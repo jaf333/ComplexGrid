@@ -113,3 +113,16 @@ ComplexArray* addComplexArrays(ComplexArray* a, ComplexArray* b) {
 
     return result;
 }
+
+
+// traverse and display 
+
+void printComplexArray(ComplexArray* arr) {
+    for (int i = 0; i < arr->totalsize; i++) {
+        printf("(%.2f, %.2f) ", creal(arr->data[i]), cimag(arr->data[i]));
+        if ((i + 1) % arr->shape[arr->ndim - 1] == 0) {
+            printf("\n");
+        }
+    }
+}
+
