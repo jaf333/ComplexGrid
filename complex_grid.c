@@ -88,3 +88,28 @@ void freeComplexArray(ComplexArray* arr) {
     free(arr->backstrides);
     free(arr);
 }
+
+// Array operations 
+
+void fillRandomComplex(ComplexArray* arr) {
+    srand(time(NULL));
+    for (int i = 0; i < arr->totalsize; i++) {
+        arr->data[i] = _getRandomComplex();
+    }
+}
+
+ComplexArray* addComplexArrays(ComplexArray* a, ComplexArray* b) {
+    if (a->totalsize != b->totalsize) {
+        fprintf(stderr, "Array sizes do not match for addition.\n");
+        exit(1);
+    }
+
+    ComplexArray* result = createComplexArray(a->shape, a->ndim);
+
+    #pragma omp parallel for
+    for (int i = 0; i < a->totalsize; i++) {
+        result->data[i] = a->data[i] + b->data[i];
+    }
+
+    return result;
+}
