@@ -35,3 +35,56 @@ Complex _getRandomComplex() {
     double imag = (double)rand() / RAND_MAX * 2.0 - 1.0;
     return real + I * imag;
 }
+
+// array Initialization 
+
+ComplexArray* createComplexArray(const int* shape, int ndim) {
+    if (ndim <= 0) {
+        fprintf(stderr, "Cannot initialize Array of dimensions %d", ndim);
+        exit(1);
+    }
+
+    ComplexArray* arr = (ComplexArray*)malloc(sizeof(ComplexArray));
+    _checkNull(arr);
+
+    arr->ndim = ndim;
+    arr->shape = (int*)malloc(arr->ndim * sizeof(int));
+    arr->strides = (int*)malloc(arr->ndim * sizeof(int));
+    arr->backstrides = (int*)malloc(arr->ndim * sizeof(int));
+
+    _checkNull(arr->shape);
+    _checkNull(arr->strides);
+    _checkNull(arr->backstrides);
+
+    arr->itemsize = sizeof(Complex);
+    arr->totalsize = 1;
+
+    for (int i = 0; i < arr->ndim; i++) {
+        arr->shape[i] = shape[i];
+        arr->totalsize *= shape[i];
+    }
+
+    arr->data = (Complex*)malloc(arr->totalsize * arr->itemsize);
+    _checkNull(arr->data);
+
+    // Calculate strides and backstrides
+    arr->strides[arr->ndim - 1] = arr->itemsize;
+    for (int i = arr->ndim - 2; i >= 0; i--) {
+        arr->strides[i] = arr->strides[i + 1] * arr->shape[i + 1];
+    }
+    for (int i = arr->ndim - 1; i >= 0; i--) {
+        arr->backstrides[i] = -1 * arr->strides[i] * (arr->shape[i] - 1);
+    }
+    arr->C_ORDER = (arr->strides[arr->ndim - 1] == arr->itemsize);
+    arr->F_ORDER = (arr->strides[0] == arr->itemsize);
+
+    return arr;
+}
+
+void freeComplexArray(ComplexArray* arr) {
+    free(arr->data);
+    free(arr->shape);
+    free(arr->strides);
+    free(arr->backstrides);
+    free(arr);
+}
