@@ -126,3 +126,28 @@ void printComplexArray(ComplexArray* arr) {
     }
 }
 
+// Main function
+
+int main() {
+    const int shape[] = {3, 3};
+    ComplexArray* array1 = createComplexArray(shape, 2);
+    ComplexArray* array2 = createComplexArray(shape, 2);
+
+    fillRandomComplex(array1);
+    fillRandomComplex(array2);
+
+    printf("Array 1:\n");
+    printComplexArray(array1);
+    printf("Array 2:\n");
+    printComplexArray(array2);
+
+    ComplexArray* sumArray = addComplexArrays(array1, array2);
+    printf("Sum of arrays:\n");
+    printComplexArray(sumArray);
+
+    freeComplexArray(array1);
+    freeComplexArray(array2);
+    freeComplexArray(sumArray);
+
+    return 0;
+}
